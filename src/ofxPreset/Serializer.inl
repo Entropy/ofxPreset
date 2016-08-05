@@ -46,8 +46,11 @@ namespace ofxPreset
 	//--------------------------------------------------------------
 	nlohmann::json & Serializer::Serialize(nlohmann::json & json, const ofAbstractParameter & parameter)
 	{
-		const auto name = parameter.getName();
-		json[name] = parameter.toString();
+		if (parameter.isSerializable())
+		{
+			const auto name = parameter.getName();
+			json[name] = parameter.toString();
+		}
 
 		return json;
 	}
@@ -55,13 +58,16 @@ namespace ofxPreset
 	//--------------------------------------------------------------
 	const nlohmann::json & Serializer::Deserialize(const nlohmann::json & json, ofAbstractParameter & parameter)
 	{
-		const auto name = parameter.getName();
-		if (json.count(name))
+		if (parameter.isSerializable())
 		{
-			string valueString = json[name];
-			if (!valueString.empty())
+			const auto name = parameter.getName();
+			if (json.count(name))
 			{
-				parameter.fromString(valueString);
+				string valueString = json[name];
+				if (!valueString.empty())
+				{
+					parameter.fromString(valueString);
+				}
 			}
 		}
 
@@ -71,67 +77,79 @@ namespace ofxPreset
 	//--------------------------------------------------------------
     nlohmann::json & Serializer::Serialize(nlohmann::json & json, const ofParameterGroup & group)
     {
-        const auto name = group.getName();
-        auto & jsonGroup = name.empty() ? json : json[name];
-        for (const auto & parameter : group)
-        {
-            // Group.
-            auto parameterGroup = dynamic_pointer_cast<ofParameterGroup>(parameter);
-            if (parameterGroup)
-            {
-                // Recurse through contents.
-                Serializer::Serialize(jsonGroup, *parameterGroup);
-                continue;
-            }
+		if (group.isSerializable())
+		{
+			const auto name = group.getName();
+			auto & jsonGroup = name.empty() ? json : json[name];
+			for (const auto & parameter : group)
+			{
+				// Group.
+				auto parameterGroup = dynamic_pointer_cast<ofParameterGroup>(parameter);
+				if (parameterGroup)
+				{
+					// Recurse through contents.
+					Serializer::Serialize(jsonGroup, *parameterGroup);
+					continue;
+				}
 
-            // Parameter.
-			auto parameterAbstract = dynamic_pointer_cast<ofAbstractParameter>(parameter);
-			if (parameterAbstract)
-            {
-				Serializer::Serialize(jsonGroup, *parameterAbstract);
-				continue;
-            }
-        }
+				// Parameter.
+				auto parameterAbstract = dynamic_pointer_cast<ofAbstractParameter>(parameter);
+				if (parameterAbstract)
+				{
+					Serializer::Serialize(jsonGroup, *parameterAbstract);
+					continue;
+				}
+			}
 
-        return jsonGroup;
+			return jsonGroup;
+		}
+		
+		ofLogWarning(__FUNCTION__) << "Group " << group.getName() << " is not serializable";
+		return json;
     }
 
     //--------------------------------------------------------------
     const nlohmann::json & Serializer::Deserialize(const nlohmann::json & json, ofParameterGroup & group)
     {
-        const auto name = group.getName();
-        if (!name.empty() && !json.count(name))
-        {
-            ofLogWarning("Serializer::Deserialize") << "Name " << name << " not found in JSON!";
-            return json;
-        }
-
-        const auto & jsonGroup = name.empty() ? json : json[name];
-        for (const auto & parameter : group)
-        {
-            if (!parameter)
-            {
-                continue;
-            }
-
-            // Group.
-			auto parameterGroup = dynamic_pointer_cast<ofParameterGroup>(parameter);
-			if (parameterGroup)
+		if (group.isSerializable())
+		{
+			const auto name = group.getName();
+			if (!name.empty() && !json.count(name))
 			{
-				// Recurse through contents.
-				Serializer::Deserialize(jsonGroup, *parameterGroup);
-				continue;
+				ofLogWarning("Serializer::Deserialize") << "Name " << name << " not found in JSON!";
+				return json;
 			}
 
-            // Parameter.
-			auto parameterAbstract = dynamic_pointer_cast<ofAbstractParameter>(parameter);
-			if (parameterAbstract)
+			const auto & jsonGroup = name.empty() ? json : json[name];
+			for (const auto & parameter : group)
 			{
-				Serializer::Deserialize(jsonGroup, *parameterAbstract);
-			}
-        }
+				if (!parameter)
+				{
+					continue;
+				}
 
-        return jsonGroup;
+				// Group.
+				auto parameterGroup = dynamic_pointer_cast<ofParameterGroup>(parameter);
+				if (parameterGroup)
+				{
+					// Recurse through contents.
+					Serializer::Deserialize(jsonGroup, *parameterGroup);
+					continue;
+				}
+
+				// Parameter.
+				auto parameterAbstract = dynamic_pointer_cast<ofAbstractParameter>(parameter);
+				if (parameterAbstract)
+				{
+					Serializer::Deserialize(jsonGroup, *parameterAbstract);
+				}
+			}
+
+			return jsonGroup;
+		}
+
+		ofLogWarning(__FUNCTION__) << "Group " << group.getName() << " is not serializable";
+		return json;
     }
 
 	//--------------------------------------------------------------
