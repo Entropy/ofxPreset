@@ -279,12 +279,20 @@ namespace ofxPreset
 	}
 
 	//--------------------------------------------------------------
-	bool Gui::AddParameter(ofParameter<ofFloatColor> & parameter)
+	bool Gui::AddParameter(ofParameter<ofFloatColor> & parameter, bool alpha)
 	{
 		static ofFloatColor tmpRef;
-		
+
 		tmpRef = parameter.get();
-		if (ImGui::ColorEdit4(parameter.getName().c_str(), &tmpRef.r))
+		if (alpha)
+		{
+			if (ImGui::ColorEdit4(parameter.getName().c_str(), &tmpRef.r))
+			{
+				parameter.set(tmpRef);
+				return true;
+			}
+		}
+		else if (ImGui::ColorEdit3(parameter.getName().c_str(), &tmpRef.r))
 		{
 			parameter.set(tmpRef);
 			return true;

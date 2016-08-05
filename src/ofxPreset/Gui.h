@@ -47,7 +47,7 @@ namespace ofxPreset
         static inline bool AddParameter(ofParameter<ofVec3f> & parameter);
         static inline bool AddParameter(ofParameter<ofVec4f> & parameter);
         
-        static inline bool AddParameter(ofParameter<ofFloatColor> & parameter);
+        static inline bool AddParameter(ofParameter<ofFloatColor> & parameter, bool alpha = true);
 
 		template<typename ParameterType>
 		static inline bool AddParameter(ofParameter<ParameterType> & parameter);
