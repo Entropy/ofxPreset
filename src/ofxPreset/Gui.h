@@ -24,6 +24,7 @@ namespace ofxPreset
 			ofVec2f windowSize;
 			bool mouseOverGui;
 			bool windowBlock;
+			bool headerBlock;
 		};
 
 		static inline void SetNextWindow(Settings & settings);

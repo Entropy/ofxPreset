@@ -10,6 +10,7 @@ namespace ofxPreset
 		: windowPos(kGuiMargin, kGuiMargin)
 		, windowSize(ofVec2f::zero())
 		, windowBlock(false)
+		, headerBlock(false)
 		, mouseOverGui(false)
 	{}
 
@@ -37,7 +38,7 @@ namespace ofxPreset
 	{
 		if (settings.windowBlock)
 		{
-			ofLogWarning("Gui::BeginWindow") << "Already inside a window block!";
+			ofLogWarning(__FUNCTION__) << "Already inside a window block!";
 			return false;
 		}
 
@@ -54,7 +55,7 @@ namespace ofxPreset
 	{
 		if (!settings.windowBlock)
 		{
-			ofLogWarning("Gui::EndWindow") << "Not inside a window block!";
+			ofLogWarning(__FUNCTION__) << "Not inside a window block!";
 			return;
 		}
 
@@ -75,11 +76,27 @@ namespace ofxPreset
 	void Gui::AddGroup(ofParameterGroup & group, Settings & settings)
 	{
 		bool prevWindowBlock = settings.windowBlock;
+		bool prevHeaderBlock = settings.headerBlock;
 		if (settings.windowBlock)
 		{
-			if (!ImGui::CollapsingHeader(group.getName().c_str(), nullptr, true, true))
+			if (settings.headerBlock)
 			{
-				return;
+				ImGui::SetNextTreeNodeOpen(true, ImGuiSetCond_Appearing);
+				if (!ImGui::TreeNode(group.getName().c_str()))
+				{
+					return;
+				}
+			}
+			else
+			{
+				if (ImGui::CollapsingHeader(group.getName().c_str(), nullptr, true, true))
+				{
+					settings.headerBlock = true;
+				}
+				else
+				{
+					return;
+				}
 			}
 		}
 		else
@@ -142,13 +159,23 @@ namespace ofxPreset
 				continue;
 			}
 
-			ofLogWarning("Gui::AddGroup") << "Could not create GUI element for parameter " << parameter->getName();
+			ofLogWarning(__FUNCTION__) << "Could not create GUI element for parameter " << parameter->getName();
 		}
 
-		// Only end window if we created it.
 		if (settings.windowBlock && !prevWindowBlock)
 		{
+			// End window if we created it.
 			Gui::EndWindow(settings);
+		}
+		else if (settings.headerBlock && !prevHeaderBlock)
+		{
+			// End header if we created it.
+			settings.headerBlock = false;
+		}
+		else
+		{
+			// End tree.
+			ImGui::TreePop();
 		}
 	}
 
