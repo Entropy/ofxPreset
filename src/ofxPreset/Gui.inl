@@ -10,6 +10,7 @@ namespace ofxPreset
 		: windowPos(kGuiMargin, kGuiMargin)
 		, windowSize(ofVec2f::zero())
 		, windowBlock(false)
+		, headerBlock(false)
 		, mouseOverGui(false)
 	{}
 
@@ -37,7 +38,7 @@ namespace ofxPreset
 	{
 		if (settings.windowBlock)
 		{
-			ofLogWarning("Gui::BeginWindow") << "Already inside a window block!";
+			ofLogWarning(__FUNCTION__) << "Already inside a window block!";
 			return false;
 		}
 
@@ -54,7 +55,7 @@ namespace ofxPreset
 	{
 		if (!settings.windowBlock)
 		{
-			ofLogWarning("Gui::EndWindow") << "Not inside a window block!";
+			ofLogWarning(__FUNCTION__) << "Not inside a window block!";
 			return;
 		}
 
@@ -75,11 +76,27 @@ namespace ofxPreset
 	void Gui::AddGroup(ofParameterGroup & group, Settings & settings)
 	{
 		bool prevWindowBlock = settings.windowBlock;
+		bool prevHeaderBlock = settings.headerBlock;
 		if (settings.windowBlock)
 		{
-			if (!ImGui::CollapsingHeader(group.getName().c_str(), nullptr, true, true))
+			if (settings.headerBlock)
 			{
-				return;
+				ImGui::SetNextTreeNodeOpen(true, ImGuiSetCond_Appearing);
+				if (!ImGui::TreeNode(group.getName().c_str()))
+				{
+					return;
+				}
+			}
+			else
+			{
+				if (ImGui::CollapsingHeader(group.getName().c_str(), nullptr, true, true))
+				{
+					settings.headerBlock = true;
+				}
+				else
+				{
+					return;
+				}
 			}
 		}
 		else
@@ -142,22 +159,30 @@ namespace ofxPreset
 				continue;
 			}
 
-			ofLogWarning("Gui::AddGroup") << "Could not create GUI element for parameter " << parameter->getName();
+			ofLogWarning(__FUNCTION__) << "Could not create GUI element for parameter " << parameter->getName();
 		}
 
-		// Only end window if we created it.
 		if (settings.windowBlock && !prevWindowBlock)
 		{
+			// End window if we created it.
 			Gui::EndWindow(settings);
+		}
+		else if (settings.headerBlock && !prevHeaderBlock)
+		{
+			// End header if we created it.
+			settings.headerBlock = false;
+		}
+		else
+		{
+			// End tree.
+			ImGui::TreePop();
 		}
 	}
 
 	//--------------------------------------------------------------
 	bool Gui::AddParameter(ofParameter<glm::tvec2<int>> & parameter)
 	{
-		static glm::tvec2<int> tmpRef;
-		
-		tmpRef = parameter.get();
+		auto tmpRef = parameter.get();
 		if (ImGui::SliderInt2(parameter.getName().c_str(), glm::value_ptr(tmpRef), parameter.getMin().x, parameter.getMax().x))
 		{
 			parameter.set(tmpRef);
@@ -169,9 +194,7 @@ namespace ofxPreset
 	//--------------------------------------------------------------
 	bool Gui::AddParameter(ofParameter<glm::tvec3<int>> & parameter)
 	{
-		static glm::tvec3<int> tmpRef;
-		
-		tmpRef = parameter.get();
+		auto tmpRef = parameter.get();
 		if (ImGui::SliderInt3(parameter.getName().c_str(), glm::value_ptr(tmpRef), parameter.getMin().x, parameter.getMax().x))
 		{
 			parameter.set(tmpRef);
@@ -183,9 +206,7 @@ namespace ofxPreset
 	//--------------------------------------------------------------
 	bool Gui::AddParameter(ofParameter<glm::tvec4<int>> & parameter)
 	{
-		static glm::tvec4<int> tmpRef;
-		
-		tmpRef = parameter.get();
+		auto tmpRef = parameter.get();
 		if (ImGui::SliderInt4(parameter.getName().c_str(), glm::value_ptr(tmpRef), parameter.getMin().x, parameter.getMax().x))
 		{
 			parameter.set(tmpRef);
@@ -197,9 +218,7 @@ namespace ofxPreset
 	//--------------------------------------------------------------
 	bool Gui::AddParameter(ofParameter<glm::vec2> & parameter)
 	{
-		static glm::vec2 tmpRef;
-		
-		tmpRef = parameter.get();
+		auto tmpRef = parameter.get();
 		if (ImGui::SliderFloat2(parameter.getName().c_str(), glm::value_ptr(tmpRef), parameter.getMin().x, parameter.getMax().x))
 		{
 			parameter.set(tmpRef);
@@ -211,9 +230,7 @@ namespace ofxPreset
 	//--------------------------------------------------------------
 	bool Gui::AddParameter(ofParameter<glm::vec3> & parameter)
 	{
-		static glm::vec3 tmpRef;
-		
-		tmpRef = parameter.get();
+		auto tmpRef = parameter.get();
 		if (ImGui::SliderFloat3(parameter.getName().c_str(), glm::value_ptr(tmpRef), parameter.getMin().x, parameter.getMax().x))
 		{
 			parameter.set(tmpRef);
@@ -225,9 +242,7 @@ namespace ofxPreset
 	//--------------------------------------------------------------
 	bool Gui::AddParameter(ofParameter<glm::vec4> & parameter)
 	{
-		static glm::vec4 tmpRef;
-		
-		tmpRef = parameter.get();
+		auto tmpRef = parameter.get();
 		if (ImGui::SliderFloat4(parameter.getName().c_str(), glm::value_ptr(tmpRef), parameter.getMin().x, parameter.getMax().x))
 		{
 			parameter.set(tmpRef);
@@ -239,9 +254,7 @@ namespace ofxPreset
 	//--------------------------------------------------------------
 	bool Gui::AddParameter(ofParameter<ofVec2f> & parameter)
 	{
-		static ofVec2f tmpRef;
-		
-		tmpRef = parameter.get();
+		auto tmpRef = parameter.get();
 		if (ImGui::SliderFloat2(parameter.getName().c_str(), tmpRef.getPtr(), parameter.getMin().x, parameter.getMax().x))
 		{
 			parameter.set(tmpRef);
@@ -253,9 +266,7 @@ namespace ofxPreset
 	//--------------------------------------------------------------
 	bool Gui::AddParameter(ofParameter<ofVec3f> & parameter)
 	{
-		static ofVec3f tmpRef;
-		
-		tmpRef = parameter.get();
+		auto tmpRef = parameter.get();
 		if (ImGui::SliderFloat3(parameter.getName().c_str(), tmpRef.getPtr(), parameter.getMin().x, parameter.getMax().x))
 		{
 			parameter.set(tmpRef);
@@ -267,9 +278,7 @@ namespace ofxPreset
 	//--------------------------------------------------------------
 	bool Gui::AddParameter(ofParameter<ofVec4f> & parameter)
 	{
-		static ofVec4f tmpRef;
-		
-		tmpRef = parameter.get();
+		auto tmpRef = parameter.get();
 		if (ImGui::SliderFloat4(parameter.getName().c_str(), tmpRef.getPtr(), parameter.getMin().x, parameter.getMax().x))
 		{
 			parameter.set(tmpRef);
@@ -279,12 +288,18 @@ namespace ofxPreset
 	}
 
 	//--------------------------------------------------------------
-	bool Gui::AddParameter(ofParameter<ofFloatColor> & parameter)
+	bool Gui::AddParameter(ofParameter<ofFloatColor> & parameter, bool alpha)
 	{
-		static ofFloatColor tmpRef;
-		
-		tmpRef = parameter.get();
-		if (ImGui::ColorEdit4(parameter.getName().c_str(), &tmpRef.r))
+		auto tmpRef = parameter.get();
+		if (alpha)
+		{
+			if (ImGui::ColorEdit4(parameter.getName().c_str(), &tmpRef.r))
+			{
+				parameter.set(tmpRef);
+				return true;
+			}
+		}
+		else if (ImGui::ColorEdit3(parameter.getName().c_str(), &tmpRef.r))
 		{
 			parameter.set(tmpRef);
 			return true;
@@ -296,10 +311,8 @@ namespace ofxPreset
 	template<typename ParameterType>
 	bool Gui::AddParameter(ofParameter<ParameterType> & parameter)
 	{
-		static ParameterType tmpRef;
-
+		auto tmpRef = parameter.get();
 		const auto & info = typeid(ParameterType);
-		tmpRef = parameter.get();
 		if (info == typeid(float))
 		{
 			if (ImGui::SliderFloat(parameter.getName().c_str(), (float *)&tmpRef, parameter.getMin(), parameter.getMax()))
@@ -335,9 +348,7 @@ namespace ofxPreset
 	//--------------------------------------------------------------
 	bool Gui::AddRadio(ofParameter<int> & parameter, vector<string> labels, int columns)
 	{
-		static int tmpRef;
-
-		tmpRef = parameter.get();
+		auto tmpRef = parameter.get();
 		auto result = false;
 		ImGui::Columns(columns);
 		for (int i = 0; i < labels.size(); ++i)
@@ -352,11 +363,8 @@ namespace ofxPreset
 	//--------------------------------------------------------------
 	bool Gui::AddRange(const string & name, ofParameter<float> & parameterMin, ofParameter<float> & parameterMax, float speed)
 	{
-		static float tmpRefMin;
-		static float tmpRefMax;
-
-		tmpRefMin = parameterMin.get();
-		tmpRefMax = parameterMax.get();
+		auto tmpRefMin = parameterMin.get();
+		auto tmpRefMax = parameterMax.get();
 		if (ImGui::DragFloatRange2(name.c_str(), &tmpRefMin, &tmpRefMax, speed, parameterMin.getMin(), parameterMax.getMax()))
 		{
 			parameterMin.set(tmpRefMin);
@@ -479,7 +487,6 @@ namespace ofxPreset
 	bool Gui::AddValues(const string & name, vector<DataType> & values, DataType minValue, DataType maxValue)
 	{
 		auto result = false;
-
 		const auto & info = typeid(DataType);
 		for (int i = 0; i < values.size(); ++i)
 		{
@@ -502,7 +509,6 @@ namespace ofxPreset
 				return false;
 			}
 		}
-
 		return result;
 	}
 
