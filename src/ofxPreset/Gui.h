@@ -12,6 +12,7 @@ namespace ofxPreset
 	public:
 		struct WindowOpen
 		{
+			std::vector<std::string> usedNames;
 			shared_ptr<ofParameter<bool>> parameter;
 			bool value;
 		};
@@ -27,12 +28,19 @@ namespace ofxPreset
 			bool headerBlock;
 		};
 
+		static WindowOpen windowOpen;
+
+		static inline const char * GetUniqueName(ofAbstractParameter & parameter); 
+		static inline const char * GetUniqueName(const std::string & candidate);
+
 		static inline void SetNextWindow(Settings & settings);
 
 		static inline bool BeginWindow(ofParameter<bool> & parameter, Settings & settings, bool collapse = true);
 		static inline bool BeginWindow(const string & name, Settings & settings, bool collapse = true, bool * open = nullptr);
 	
 		static inline void EndWindow(Settings & settings);
+
+		static inline std::string GetUniqueName(std::string & candidate);
 
 		static inline void AddGroup(ofParameterGroup & group, Settings & settings);
 	

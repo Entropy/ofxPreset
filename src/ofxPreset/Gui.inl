@@ -3,9 +3,6 @@
 namespace ofxPreset
 {
 	//--------------------------------------------------------------
-	static Gui::WindowOpen windowOpen;
-
-	//--------------------------------------------------------------
 	Gui::Settings::Settings()
 		: windowPos(kGuiMargin, kGuiMargin)
 		, windowSize(ofVec2f::zero())
@@ -13,6 +10,24 @@ namespace ofxPreset
 		, headerBlock(false)
 		, mouseOverGui(false)
 	{}
+
+	//--------------------------------------------------------------
+	const char * Gui::GetUniqueName(ofAbstractParameter & parameter)
+	{
+		return GetUniqueName(parameter.getName());
+	}
+
+	//--------------------------------------------------------------
+	const char * Gui::GetUniqueName(const std::string & candidate)
+	{
+		std::string result = candidate;
+		while (std::find(windowOpen.usedNames.begin(), windowOpen.usedNames.end(), result) != windowOpen.usedNames.end())
+		{
+			result += " ";
+		}
+		windowOpen.usedNames.push_back(result);
+		return windowOpen.usedNames.back().c_str();
+	}
 
 	//--------------------------------------------------------------
 	void Gui::SetNextWindow(Settings & settings)
@@ -68,6 +83,9 @@ namespace ofxPreset
 		// Unlink the referenced ofParameter.
 		windowOpen.parameter.reset();
 
+		// Clear the used GUI names.
+		windowOpen.usedNames.clear();
+
 		const auto bounds = ofRectangle(settings.windowPos, settings.windowSize.x, settings.windowSize.y);
 		settings.mouseOverGui |= bounds.inside(ofGetMouseX(), ofGetMouseY());
 	}
@@ -82,14 +100,14 @@ namespace ofxPreset
 			if (settings.headerBlock)
 			{
 				ImGui::SetNextTreeNodeOpen(true, ImGuiSetCond_Appearing);
-				if (!ImGui::TreeNode(group.getName().c_str()))
+				if (!ImGui::TreeNode(GetUniqueName(group)))
 				{
 					return;
 				}
 			}
 			else
 			{
-				if (ImGui::CollapsingHeader(group.getName().c_str(), nullptr, true, true))
+				if (ImGui::CollapsingHeader(GetUniqueName(group), nullptr, true, true))
 				{
 					settings.headerBlock = true;
 				}
@@ -183,7 +201,7 @@ namespace ofxPreset
 	bool Gui::AddParameter(ofParameter<glm::tvec2<int>> & parameter)
 	{
 		auto tmpRef = parameter.get();
-		if (ImGui::SliderInt2(parameter.getName().c_str(), glm::value_ptr(tmpRef), parameter.getMin().x, parameter.getMax().x))
+		if (ImGui::SliderInt2(GetUniqueName(parameter), glm::value_ptr(tmpRef), parameter.getMin().x, parameter.getMax().x))
 		{
 			parameter.set(tmpRef);
 			return true;
@@ -195,7 +213,7 @@ namespace ofxPreset
 	bool Gui::AddParameter(ofParameter<glm::tvec3<int>> & parameter)
 	{
 		auto tmpRef = parameter.get();
-		if (ImGui::SliderInt3(parameter.getName().c_str(), glm::value_ptr(tmpRef), parameter.getMin().x, parameter.getMax().x))
+		if (ImGui::SliderInt3(GetUniqueName(parameter), glm::value_ptr(tmpRef), parameter.getMin().x, parameter.getMax().x))
 		{
 			parameter.set(tmpRef);
 			return true;
@@ -207,7 +225,7 @@ namespace ofxPreset
 	bool Gui::AddParameter(ofParameter<glm::tvec4<int>> & parameter)
 	{
 		auto tmpRef = parameter.get();
-		if (ImGui::SliderInt4(parameter.getName().c_str(), glm::value_ptr(tmpRef), parameter.getMin().x, parameter.getMax().x))
+		if (ImGui::SliderInt4(GetUniqueName(parameter), glm::value_ptr(tmpRef), parameter.getMin().x, parameter.getMax().x))
 		{
 			parameter.set(tmpRef);
 			return true;
@@ -219,7 +237,7 @@ namespace ofxPreset
 	bool Gui::AddParameter(ofParameter<glm::vec2> & parameter)
 	{
 		auto tmpRef = parameter.get();
-		if (ImGui::SliderFloat2(parameter.getName().c_str(), glm::value_ptr(tmpRef), parameter.getMin().x, parameter.getMax().x))
+		if (ImGui::SliderFloat2(GetUniqueName(parameter), glm::value_ptr(tmpRef), parameter.getMin().x, parameter.getMax().x))
 		{
 			parameter.set(tmpRef);
 			return true;
@@ -231,7 +249,7 @@ namespace ofxPreset
 	bool Gui::AddParameter(ofParameter<glm::vec3> & parameter)
 	{
 		auto tmpRef = parameter.get();
-		if (ImGui::SliderFloat3(parameter.getName().c_str(), glm::value_ptr(tmpRef), parameter.getMin().x, parameter.getMax().x))
+		if (ImGui::SliderFloat3(GetUniqueName(parameter), glm::value_ptr(tmpRef), parameter.getMin().x, parameter.getMax().x))
 		{
 			parameter.set(tmpRef);
 			return true;
@@ -243,7 +261,7 @@ namespace ofxPreset
 	bool Gui::AddParameter(ofParameter<glm::vec4> & parameter)
 	{
 		auto tmpRef = parameter.get();
-		if (ImGui::SliderFloat4(parameter.getName().c_str(), glm::value_ptr(tmpRef), parameter.getMin().x, parameter.getMax().x))
+		if (ImGui::SliderFloat4(GetUniqueName(parameter), glm::value_ptr(tmpRef), parameter.getMin().x, parameter.getMax().x))
 		{
 			parameter.set(tmpRef);
 			return true;
@@ -255,7 +273,7 @@ namespace ofxPreset
 	bool Gui::AddParameter(ofParameter<ofVec2f> & parameter)
 	{
 		auto tmpRef = parameter.get();
-		if (ImGui::SliderFloat2(parameter.getName().c_str(), tmpRef.getPtr(), parameter.getMin().x, parameter.getMax().x))
+		if (ImGui::SliderFloat2(GetUniqueName(parameter), tmpRef.getPtr(), parameter.getMin().x, parameter.getMax().x))
 		{
 			parameter.set(tmpRef);
 			return true;
@@ -267,7 +285,7 @@ namespace ofxPreset
 	bool Gui::AddParameter(ofParameter<ofVec3f> & parameter)
 	{
 		auto tmpRef = parameter.get();
-		if (ImGui::SliderFloat3(parameter.getName().c_str(), tmpRef.getPtr(), parameter.getMin().x, parameter.getMax().x))
+		if (ImGui::SliderFloat3(GetUniqueName(parameter), tmpRef.getPtr(), parameter.getMin().x, parameter.getMax().x))
 		{
 			parameter.set(tmpRef);
 			return true;
@@ -279,7 +297,7 @@ namespace ofxPreset
 	bool Gui::AddParameter(ofParameter<ofVec4f> & parameter)
 	{
 		auto tmpRef = parameter.get();
-		if (ImGui::SliderFloat4(parameter.getName().c_str(), tmpRef.getPtr(), parameter.getMin().x, parameter.getMax().x))
+		if (ImGui::SliderFloat4(GetUniqueName(parameter), tmpRef.getPtr(), parameter.getMin().x, parameter.getMax().x))
 		{
 			parameter.set(tmpRef);
 			return true;
@@ -293,13 +311,13 @@ namespace ofxPreset
 		auto tmpRef = parameter.get();
 		if (alpha)
 		{
-			if (ImGui::ColorEdit4(parameter.getName().c_str(), &tmpRef.r))
+			if (ImGui::ColorEdit4(GetUniqueName(parameter), &tmpRef.r))
 			{
 				parameter.set(tmpRef);
 				return true;
 			}
 		}
-		else if (ImGui::ColorEdit3(parameter.getName().c_str(), &tmpRef.r))
+		else if (ImGui::ColorEdit3(GetUniqueName(parameter), &tmpRef.r))
 		{
 			parameter.set(tmpRef);
 			return true;
@@ -315,7 +333,7 @@ namespace ofxPreset
 		const auto & info = typeid(ParameterType);
 		if (info == typeid(float))
 		{
-			if (ImGui::SliderFloat(parameter.getName().c_str(), (float *)&tmpRef, parameter.getMin(), parameter.getMax()))
+			if (ImGui::SliderFloat(GetUniqueName(parameter), (float *)&tmpRef, parameter.getMin(), parameter.getMax()))
 			{
 				parameter.set(tmpRef);
 				return true;
@@ -324,7 +342,7 @@ namespace ofxPreset
 		}
 		if (info == typeid(int))
 		{
-			if (ImGui::SliderInt(parameter.getName().c_str(), (int *)&tmpRef, parameter.getMin(), parameter.getMax()))
+			if (ImGui::SliderInt(GetUniqueName(parameter), (int *)&tmpRef, parameter.getMin(), parameter.getMax()))
 			{
 				parameter.set(tmpRef);
 				return true;
@@ -333,7 +351,7 @@ namespace ofxPreset
 		}
 		if (info == typeid(bool))
 		{
-			if (ImGui::Checkbox(parameter.getName().c_str(), (bool *)&tmpRef))
+			if (ImGui::Checkbox(GetUniqueName(parameter), (bool *)&tmpRef))
 			{
 				parameter.set(tmpRef);
 				return true;
@@ -365,7 +383,7 @@ namespace ofxPreset
 	{
 		auto tmpRefMin = parameterMin.get();
 		auto tmpRefMax = parameterMax.get();
-		if (ImGui::DragFloatRange2(name.c_str(), &tmpRefMin, &tmpRefMax, speed, parameterMin.getMin(), parameterMax.getMax()))
+		if (ImGui::DragFloatRange2(GetUniqueName(name), &tmpRefMin, &tmpRefMax, speed, parameterMin.getMin(), parameterMax.getMax()))
 		{
 			parameterMin.set(tmpRefMin);
 			parameterMax.set(tmpRefMax);
@@ -381,7 +399,7 @@ namespace ofxPreset
 		for (int i = 0; i < values.size(); ++i)
 		{
 			const auto iname = name + " " + ofToString(i);
-			result |= ImGui::SliderInt2(iname.c_str(), glm::value_ptr(values[i]), minValue, maxValue);
+			result |= ImGui::SliderInt2(GetUniqueName(iname), glm::value_ptr(values[i]), minValue, maxValue);
 		}
 		return result;
 	}
@@ -393,7 +411,7 @@ namespace ofxPreset
 		for (int i = 0; i < values.size(); ++i)
 		{
 			const auto iname = name + " " + ofToString(i);
-			result |= ImGui::SliderInt3(iname.c_str(), glm::value_ptr(values[i]), minValue, maxValue);
+			result |= ImGui::SliderInt3(GetUniqueName(iname), glm::value_ptr(values[i]), minValue, maxValue);
 		}
 		return result;
 	}
@@ -405,7 +423,7 @@ namespace ofxPreset
 		for (int i = 0; i < values.size(); ++i)
 		{
 			const auto iname = name + " " + ofToString(i);
-			result |= ImGui::SliderInt4(iname.c_str(), glm::value_ptr(values[i]), minValue, maxValue);
+			result |= ImGui::SliderInt4(GetUniqueName(iname), glm::value_ptr(values[i]), minValue, maxValue);
 		}
 		return result;
 	}
@@ -417,7 +435,7 @@ namespace ofxPreset
 		for (int i = 0; i < values.size(); ++i)
 		{
 			const auto iname = name + " " + ofToString(i);
-			result |= ImGui::SliderFloat2(iname.c_str(), glm::value_ptr(values[i]), minValue, maxValue);
+			result |= ImGui::SliderFloat2(GetUniqueName(iname), glm::value_ptr(values[i]), minValue, maxValue);
 		}
 		return result;
 	}
@@ -429,7 +447,7 @@ namespace ofxPreset
 		for (int i = 0; i < values.size(); ++i)
 		{
 			const auto iname = name + " " + ofToString(i);
-			result |= ImGui::SliderFloat3(iname.c_str(), glm::value_ptr(values[i]), minValue, maxValue);
+			result |= ImGui::SliderFloat3(GetUniqueName(iname), glm::value_ptr(values[i]), minValue, maxValue);
 		}
 		return result;
 	}
@@ -441,7 +459,7 @@ namespace ofxPreset
 		for (int i = 0; i < values.size(); ++i)
 		{
 			const auto iname = name + " " + ofToString(i);
-			result |= ImGui::SliderFloat4(iname.c_str(), glm::value_ptr(values[i]), minValue, maxValue);
+			result |= ImGui::SliderFloat4(GetUniqueName(iname), glm::value_ptr(values[i]), minValue, maxValue);
 		}
 		return result;
 	}
@@ -453,7 +471,7 @@ namespace ofxPreset
 		for (int i = 0; i < values.size(); ++i)
 		{
 			const auto iname = name + " " + ofToString(i);
-			result |= ImGui::SliderFloat2(iname.c_str(), values[i].getPtr(), minValue, maxValue);
+			result |= ImGui::SliderFloat2(GetUniqueName(iname), values[i].getPtr(), minValue, maxValue);
 		}
 		return result;
 	}
@@ -465,7 +483,7 @@ namespace ofxPreset
 		for (int i = 0; i < values.size(); ++i)
 		{
 			const auto iname = name + " " + ofToString(i);
-			result |= ImGui::SliderFloat3(iname.c_str(), values[i].getPtr(), minValue, maxValue);
+			result |= ImGui::SliderFloat3(GetUniqueName(iname), values[i].getPtr(), minValue, maxValue);
 		}
 		return result;
 	}
@@ -477,7 +495,7 @@ namespace ofxPreset
 		for (int i = 0; i < values.size(); ++i)
 		{
 			const auto iname = name + " " + ofToString(i);
-			result |= ImGui::SliderFloat4(iname.c_str(), values[i].getPtr(), minValue, maxValue);
+			result |= ImGui::SliderFloat4(GetUniqueName(iname), values[i].getPtr(), minValue, maxValue);
 		}
 		return result;
 	}
@@ -493,15 +511,15 @@ namespace ofxPreset
 			const auto iname = name + " " + ofToString(i);
 			if (info == typeid(float))
 			{
-				result |= ImGui::SliderFloat(iname.c_str(), *values[i], minValue, maxValue);
+				result |= ImGui::SliderFloat(GetUniqueName(iname), *values[i], minValue, maxValue);
 			}
 			else if (info == typeid(int))
 			{
-				result |= ImGui::SliderInt(iname.c_str(), *values[i], minValue, maxValue);
+				result |= ImGui::SliderInt(GetUniqueName(iname), *values[i], minValue, maxValue);
 			}
 			else if (info == typeid(bool))
 			{
-				result |= ImGui::Checkbox(iname.c_str(), *values[i]);
+				result |= ImGui::Checkbox(GetUniqueName(iname), *values[i]);
 			}
 			else
 			{
