@@ -21,11 +21,13 @@ namespace ofxPreset
 		{
 			inline Settings();
 
-			ofVec2f windowPos;
-			ofVec2f windowSize;
+			ofDefaultVec2 windowPos;
+			ofDefaultVec2 windowSize;
 			bool mouseOverGui;
 			bool windowBlock;
 			bool headerBlock;
+
+			ofRectangle screenBounds;
 		};
 
 		static WindowOpen windowOpen;
