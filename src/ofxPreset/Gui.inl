@@ -379,6 +379,18 @@ namespace ofxPreset
 	}
 
 	//--------------------------------------------------------------
+	bool Gui::AddStepper(ofParameter<int> & parameter, int step, int stepFast)
+	{
+		auto tmpRef = parameter.get();
+		if (ImGui::InputInt(parameter.getName().c_str(), &tmpRef, step, stepFast))
+		{
+			parameter.set(tmpRef);
+			return true;
+		}
+		return false;
+	}
+
+	//--------------------------------------------------------------
 	bool Gui::AddRange(const string & name, ofParameter<float> & parameterMin, ofParameter<float> & parameterMax, float speed)
 	{
 		auto tmpRefMin = parameterMin.get();

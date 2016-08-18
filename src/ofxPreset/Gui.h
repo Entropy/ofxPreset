@@ -64,6 +64,7 @@ namespace ofxPreset
 		static inline bool AddParameter(ofParameter<ParameterType> & parameter);
 
 		static inline bool AddRadio(ofParameter<int> & parameter, vector<string> labels, int columns = 1);
+		static inline bool AddStepper(ofParameter<int> & parameter, int step = 1, int stepFast = 100);
 
 		static inline bool AddRange(const string & name, ofParameter<float> & parameterMin, ofParameter<float> & parameterMax, float speed = 0.01f);
 
