@@ -258,7 +258,7 @@ namespace ofxPreset
         auto & jsonGroup = name.empty() ? json : json[name];
 
         ostringstream oss;
-        oss << node.getGlobalTransformMatrix();
+        oss << node.getLocalTransformMatrix();
         jsonGroup["transform"] = oss.str();
 
         return jsonGroup;
