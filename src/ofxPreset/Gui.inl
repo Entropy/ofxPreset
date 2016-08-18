@@ -382,7 +382,7 @@ namespace ofxPreset
 	bool Gui::AddStepper(ofParameter<int> & parameter, int step, int stepFast)
 	{
 		auto tmpRef = parameter.get();
-		if (ImGui::InputInt(parameter.getName().c_str(), &tmpRef, step, stepFast))
+		if (ImGui::InputInt(GetUniqueName(parameter), &tmpRef, step, stepFast))
 		{
 			parameter.set(tmpRef);
 			return true;
