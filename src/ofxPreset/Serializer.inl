@@ -186,17 +186,24 @@ namespace ofxPreset
 
 		const auto & jsonGroup = name.empty() ? json : json[name];
 
-		ofVec3f target;
-		istringstream iss;
-		iss.str(jsonGroup["target"]);
-		iss >> target;
-		easyCam.setTarget(target);
-		easyCam.setDistance(jsonGroup["distance"]);
-		easyCam.setDrag(jsonGroup["drag"]);
-		jsonGroup["mouseInputEnabled"] ? easyCam.enableMouseInput() : easyCam.disableMouseInput();
-		jsonGroup["mouseMiddleButtonEnabled"] ? easyCam.enableMouseMiddleButton() : easyCam.disableMouseMiddleButton();
-		int translationKey = jsonGroup["translationKey"];
-		easyCam.setTranslationKey(translationKey);
+		try
+		{
+			ofVec3f target;
+			istringstream iss;
+			iss.str(jsonGroup["target"]);
+			iss >> target;
+			easyCam.setTarget(target);
+			easyCam.setDistance(jsonGroup["distance"]);
+			easyCam.setDrag(jsonGroup["drag"]);
+			jsonGroup["mouseInputEnabled"] ? easyCam.enableMouseInput() : easyCam.disableMouseInput();
+			jsonGroup["mouseMiddleButtonEnabled"] ? easyCam.enableMouseMiddleButton() : easyCam.disableMouseMiddleButton();
+			int translationKey = jsonGroup["translationKey"];
+			easyCam.setTranslationKey(translationKey);
+		}
+		catch (std::exception & exc)
+		{
+			ofLogError(__FUNCTION__) << exc.what();
+		}
 
 		Serializer::Deserialize(jsonGroup, (ofCamera &)easyCam);
 
@@ -232,20 +239,27 @@ namespace ofxPreset
 		
 		const auto & jsonGroup = name.empty() ? json : json[name];
 
-		camera.setFov(jsonGroup["fov"]);
-		camera.setNearClip(jsonGroup["nearClip"]);
-		camera.setFarClip(jsonGroup["farClip"]);
-		ofVec2f lensOffset;
-		istringstream iss;
-		iss.str(jsonGroup["lensOffset"]);
-		iss >> lensOffset;
-		camera.setLensOffset(lensOffset);
-		camera.setForceAspectRatio(jsonGroup["forceAspectRatio"]);
-		if (camera.getForceAspectRatio())
+		try
 		{
-			camera.setAspectRatio(jsonGroup["aspectRatio"]);
+			camera.setFov(jsonGroup["fov"]);
+			camera.setNearClip(jsonGroup["nearClip"]);
+			camera.setFarClip(jsonGroup["farClip"]);
+			ofVec2f lensOffset;
+			istringstream iss;
+			iss.str(jsonGroup["lensOffset"]);
+			iss >> lensOffset;
+			camera.setLensOffset(lensOffset);
+			camera.setForceAspectRatio(jsonGroup["forceAspectRatio"]);
+			if (camera.getForceAspectRatio())
+			{
+				camera.setAspectRatio(jsonGroup["aspectRatio"]);
+			}
+			jsonGroup["ortho"] ? camera.enableOrtho() : camera.disableOrtho();
 		}
-		jsonGroup["ortho"] ? camera.enableOrtho() : camera.disableOrtho();
+		catch (std::exception & exc)
+		{
+			ofLogError(__FUNCTION__) << exc.what();
+		}
 
 		Serializer::Deserialize(jsonGroup, (ofNode &)camera);
 
@@ -275,11 +289,18 @@ namespace ofxPreset
 
 		const auto & jsonGroup = name.empty() ? json : json[name];
 
-		ofMatrix4x4 transform;
-		istringstream iss;
-		iss.str(jsonGroup["transform"]);
-		iss >> transform;
-		node.setTransformMatrix(transform);
+		try
+		{
+			ofMatrix4x4 transform;
+			istringstream iss;
+			iss.str(jsonGroup["transform"]);
+			iss >> transform;
+			node.setTransformMatrix(transform);
+		}
+		catch (std::exception & exc)
+		{
+			ofLogError(__FUNCTION__) << exc.what();
+		}
 
 		return jsonGroup;
     }
