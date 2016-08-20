@@ -83,11 +83,15 @@ namespace ofxPreset
 		// Unlink the referenced ofParameter.
 		windowOpen.parameter.reset();
 
-		// Clear the used GUI names.
+		// Clear the used gui names.
 		windowOpen.usedNames.clear();
 
-		const auto bounds = ofRectangle(settings.windowPos, settings.windowSize.x, settings.windowSize.y);
-		settings.mouseOverGui |= bounds.inside(ofGetMouseX(), ofGetMouseY());
+		// Check if the mouse cursor is over this gui window.
+		const auto windowBounds = ofRectangle(settings.windowPos, settings.windowSize.x, settings.windowSize.y);
+		settings.mouseOverGui |= windowBounds.inside(ofGetMouseX(), ofGetMouseY());
+
+		// Include this window's bounds in the total bounds.
+		settings.totalBounds.growToInclude(windowBounds);
 	}
 
 	//--------------------------------------------------------------

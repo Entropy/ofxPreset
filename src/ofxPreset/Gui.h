@@ -27,6 +27,7 @@ namespace ofxPreset
 			bool windowBlock;
 			bool headerBlock;
 
+			ofRectangle totalBounds;
 			ofRectangle screenBounds;
 		};
 
