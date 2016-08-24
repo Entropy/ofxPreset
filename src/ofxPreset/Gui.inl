@@ -370,14 +370,19 @@ namespace ofxPreset
 	//--------------------------------------------------------------
 	bool Gui::AddRadio(ofParameter<int> & parameter, vector<string> labels, int columns)
 	{
-		auto tmpRef = parameter.get();
+		ImGui::Text(parameter.getName().c_str());
 		auto result = false;
-		ImGui::Columns(columns);
-		for (int i = 0; i < labels.size(); ++i)
+		auto tmpRef = parameter.get();
+		ImGui::PushID(parameter.getName().c_str());
 		{
-			result |= ImGui::RadioButton(labels[i].c_str(), &tmpRef, i); ImGui::NextColumn();
+			ImGui::Columns(columns);
+			for (int i = 0; i < labels.size(); ++i)
+			{
+				result |= ImGui::RadioButton(labels[i].c_str(), &tmpRef, i); ImGui::NextColumn();
+			}
+			ImGui::Columns(1);
 		}
-		ImGui::Columns(1);
+		ImGui::PopID();
 		parameter.set(tmpRef);
 		return result;
 	}
