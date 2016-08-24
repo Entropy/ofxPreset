@@ -43,8 +43,6 @@ namespace ofxPreset
 	
 		static inline void EndWindow(Settings & settings);
 
-		static inline std::string GetUniqueName(std::string & candidate);
-
 		static inline void AddGroup(ofParameterGroup & group, Settings & settings);
 	
         static inline bool AddParameter(ofParameter<glm::tvec2<int>> & parameter);

@@ -378,7 +378,8 @@ namespace ofxPreset
 			ImGui::Columns(columns);
 			for (int i = 0; i < labels.size(); ++i)
 			{
-				result |= ImGui::RadioButton(labels[i].c_str(), &tmpRef, i); ImGui::NextColumn();
+				result |= ImGui::RadioButton(GetUniqueName(labels[i]), &tmpRef, i); 
+				ImGui::NextColumn();
 			}
 			ImGui::Columns(1);
 		}
