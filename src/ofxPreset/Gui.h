@@ -37,11 +37,13 @@ namespace ofxPreset
 		static inline const char * GetUniqueName(const std::string & candidate);
 
 		static inline void SetNextWindow(Settings & settings);
-
 		static inline bool BeginWindow(ofParameter<bool> & parameter, Settings & settings, bool collapse = true);
 		static inline bool BeginWindow(const string & name, Settings & settings, bool collapse = true, bool * open = nullptr);
-	
 		static inline void EndWindow(Settings & settings);
+
+		static inline bool BeginTree(ofAbstractParameter & parameter, Settings & settings);
+		static inline bool BeginTree(const string & name, Settings & settings);
+		static inline void EndTree(Settings & settings);
 
 		static inline void AddGroup(ofParameterGroup & group, Settings & settings);
 	

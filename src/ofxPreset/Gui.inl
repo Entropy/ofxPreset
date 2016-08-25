@@ -49,7 +49,7 @@ namespace ofxPreset
 	}
 
 	//--------------------------------------------------------------
-	bool Gui::BeginWindow(const string & name, Settings & settings, bool collapse, bool * opened)
+	bool Gui::BeginWindow(const string & name, Settings & settings, bool collapse, bool * open)
 	{
 		if (settings.windowBlock)
 		{
@@ -62,7 +62,7 @@ namespace ofxPreset
 		ImGui::SetNextWindowPos(settings.windowPos, ImGuiSetCond_Appearing);
 		ImGui::SetNextWindowSize(settings.windowSize, ImGuiSetCond_Appearing);
 		ImGui::SetNextWindowCollapsed(collapse, ImGuiSetCond_Appearing);
-		return ImGui::Begin(name.c_str(), opened, ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_AlwaysAutoResize | (collapse ? 0 : ImGuiWindowFlags_NoCollapse));
+		return ImGui::Begin(name.c_str(), open, ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_AlwaysAutoResize | (collapse ? 0 : ImGuiWindowFlags_NoCollapse));
 	}
 
 	//--------------------------------------------------------------
@@ -99,6 +99,25 @@ namespace ofxPreset
 		{
 			settings.totalBounds.growToInclude(windowBounds);
 		}
+	}
+
+	//--------------------------------------------------------------
+	bool Gui::BeginTree(ofAbstractParameter & parameter, Settings & settings)
+	{
+		return Gui::BeginTree(parameter.getName(), settings);
+	}
+
+	//--------------------------------------------------------------
+	bool Gui::BeginTree(const string & name, Settings & settings)
+	{
+		ImGui::SetNextTreeNodeOpen(true, ImGuiSetCond_Appearing);
+		return ImGui::TreeNodeEx(name.c_str(), ImGuiTreeNodeFlags_CollapsingHeader);
+	}
+
+	//--------------------------------------------------------------
+	void Gui::EndTree(Settings & settings)
+	{
+		ImGui::TreePop();
 	}
 
 	//--------------------------------------------------------------
