@@ -157,19 +157,15 @@ namespace ofxPreset
 	{
 		auto & jsonGroup = Serializer::Serialize(json, (ofCamera &)easyCam, name);
 
-		// Need to remove const qualifier because some getters are not const.
-		// Can be removed if/when this PR goes through: https://github.com/openframeworks/openFrameworks/pull/5126
-		auto & mutableCam = const_cast<ofEasyCam &>(easyCam);
-
-		ostringstream oss;
-		oss << mutableCam.getTarget().getPosition();
-		jsonGroup["target"] = oss.str();
+		jsonGroup["target"] = ofToString(easyCam.getTarget().getPosition());
 		jsonGroup["distance"] = easyCam.getDistance();
 		jsonGroup["drag"] = easyCam.getDrag();
-		jsonGroup["mouseInputEnabled"] = mutableCam.getMouseInputEnabled();
-		jsonGroup["mouseMiddleButtonEnabled"] = mutableCam.getMouseMiddleButtonEnabled();
-		jsonGroup["translationKey"] = mutableCam.getTranslationKey();
-
+		jsonGroup["mouseInputEnabled"] = easyCam.getMouseInputEnabled();
+		jsonGroup["mouseMiddleButtonEnabled"] = easyCam.getMouseMiddleButtonEnabled();
+		jsonGroup["translationKey"] = easyCam.getTranslationKey();
+		jsonGroup["relativeYAxis"] = easyCam.getRelativeYAxis();
+		jsonGroup["upAxis"] = ofToString(easyCam.getUpAxis());
+		jsonGroup["inertiaEnabled"] = easyCam.getInertiaEnabled();
 		return jsonGroup;
 	}
 
@@ -188,10 +184,7 @@ namespace ofxPreset
 
 		try
 		{
-			ofVec3f target;
-			istringstream iss;
-			iss.str(jsonGroup["target"]);
-			iss >> target;
+			const auto target = ofFromString<glm::vec3>(jsonGroup["target"]);
 			easyCam.setTarget(target);
 			easyCam.setDistance(jsonGroup["distance"]);
 			easyCam.setDrag(jsonGroup["drag"]);
@@ -218,9 +211,7 @@ namespace ofxPreset
 		jsonGroup["fov"] = camera.getFov();
 		jsonGroup["nearClip"] = camera.getNearClip();
 		jsonGroup["farClip"] = camera.getFarClip();
-		ostringstream oss;
-		oss << camera.getLensOffset();
-		jsonGroup["lensOffset"] = oss.str();
+		jsonGroup["lensOffset"] = ofToString(camera.getLensOffset());
 		jsonGroup["aspectRatio"] = camera.getAspectRatio();
 		jsonGroup["forceAspectRatio"] = camera.getForceAspectRatio();
 		jsonGroup["ortho"] = camera.getOrtho();
@@ -244,10 +235,7 @@ namespace ofxPreset
 			camera.setFov(jsonGroup["fov"]);
 			camera.setNearClip(jsonGroup["nearClip"]);
 			camera.setFarClip(jsonGroup["farClip"]);
-			ofVec2f lensOffset;
-			istringstream iss;
-			iss.str(jsonGroup["lensOffset"]);
-			iss >> lensOffset;
+			const auto lensOffset = ofFromString<glm::vec2>(jsonGroup["lensOffset"]);
 			camera.setLensOffset(lensOffset);
 			camera.setForceAspectRatio(jsonGroup["forceAspectRatio"]);
 			if (camera.getForceAspectRatio())
@@ -271,9 +259,7 @@ namespace ofxPreset
     {
         auto & jsonGroup = name.empty() ? json : json[name];
 
-        ostringstream oss;
-        oss << node.getLocalTransformMatrix();
-        jsonGroup["transform"] = oss.str();
+        jsonGroup["transform"] = ofToString(node.getLocalTransformMatrix());
 
         return jsonGroup;
     }
@@ -291,10 +277,7 @@ namespace ofxPreset
 
 		try
 		{
-			ofMatrix4x4 transform;
-			istringstream iss;
-			iss.str(jsonGroup["transform"]);
-			iss >> transform;
+			const auto transform = ofFromString<glm::mat4>(jsonGroup["transform"]);
 			node.setTransformMatrix(transform);
 		}
 		catch (std::exception & exc)
