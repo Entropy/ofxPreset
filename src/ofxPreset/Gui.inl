@@ -91,7 +91,14 @@ namespace ofxPreset
 		settings.mouseOverGui |= windowBounds.inside(ofGetMouseX(), ofGetMouseY());
 
 		// Include this window's bounds in the total bounds.
-		settings.totalBounds.growToInclude(windowBounds);
+		if (settings.totalBounds.isZero())
+		{
+			settings.totalBounds = windowBounds;
+		}
+		else
+		{
+			settings.totalBounds.growToInclude(windowBounds);
+		}
 	}
 
 	//--------------------------------------------------------------
