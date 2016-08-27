@@ -7,7 +7,7 @@ namespace ofxPreset
 		: windowPos(kGuiMargin, kGuiMargin)
 		, windowSize(ofVec2f::zero())
 		, windowBlock(false)
-		, headerBlock(false)
+		, treeLevel(0)
 		, mouseOverGui(false)
 	{}
 
@@ -110,13 +110,22 @@ namespace ofxPreset
 	//--------------------------------------------------------------
 	bool Gui::BeginTree(const string & name, Settings & settings)
 	{
+		settings.treeLevel += 1;
 		ImGui::SetNextTreeNodeOpen(true, ImGuiSetCond_Appearing);
-		return ImGui::TreeNodeEx(name.c_str(), ImGuiTreeNodeFlags_CollapsingHeader);
+		if (settings.treeLevel > 1)
+		{
+			return ImGui::TreeNodeEx(GetUniqueName(name), ImGuiTreeNodeFlags_CollapsingHeader);
+		}
+		else
+		{
+			return ImGui::TreeNode(GetUniqueName(name));
+		}
 	}
 
 	//--------------------------------------------------------------
 	void Gui::EndTree(Settings & settings)
 	{
+		settings.treeLevel -= 1;
 		ImGui::TreePop();
 	}
 
@@ -124,32 +133,20 @@ namespace ofxPreset
 	void Gui::AddGroup(ofParameterGroup & group, Settings & settings)
 	{
 		bool prevWindowBlock = settings.windowBlock;
-		bool prevHeaderBlock = settings.headerBlock;
 		if (settings.windowBlock)
 		{
-			if (settings.headerBlock)
+			if (!Gui::BeginTree(group, settings))
 			{
-				ImGui::SetNextTreeNodeOpen(true, ImGuiSetCond_Appearing);
-				if (!ImGui::TreeNode(GetUniqueName(group)))
-				{
-					return;
-				}
-			}
-			else
-			{
-				if (ImGui::CollapsingHeader(GetUniqueName(group), nullptr, true, true))
-				{
-					settings.headerBlock = true;
-				}
-				else
-				{
-					return;
-				}
+				return;
 			}
 		}
 		else
 		{
-			Gui::BeginWindow(group.getName().c_str(), settings);
+			if (!Gui::BeginWindow(group.getName().c_str(), settings))
+			{
+				Gui::EndWindow(settings);
+				return;
+			}
 		}
 
 		for (auto parameter : group)
@@ -215,15 +212,10 @@ namespace ofxPreset
 			// End window if we created it.
 			Gui::EndWindow(settings);
 		}
-		else if (settings.headerBlock && !prevHeaderBlock)
-		{
-			// End header if we created it.
-			settings.headerBlock = false;
-		}
 		else
 		{
 			// End tree.
-			ImGui::TreePop();
+			Gui::EndTree(settings);
 		}
 	}
 

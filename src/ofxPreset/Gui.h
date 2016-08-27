@@ -25,7 +25,7 @@ namespace ofxPreset
 			ofDefaultVec2 windowSize;
 			bool mouseOverGui;
 			bool windowBlock;
-			bool headerBlock;
+			int treeLevel;
 
 			ofRectangle totalBounds;
 			ofRectangle screenBounds;
