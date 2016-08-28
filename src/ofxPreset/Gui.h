@@ -1,6 +1,5 @@
 #pragma once
 
-#include "ofMain.h"
 #include "ofxImGui.h"
 
 static const int kGuiMargin = 10;

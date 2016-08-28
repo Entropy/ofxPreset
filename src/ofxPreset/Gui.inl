@@ -110,22 +110,27 @@ namespace ofxPreset
 	//--------------------------------------------------------------
 	bool Gui::BeginTree(const string & name, Settings & settings)
 	{
-		settings.treeLevel += 1;
+		bool result;
 		ImGui::SetNextTreeNodeOpen(true, ImGuiSetCond_Appearing);
-		if (settings.treeLevel > 1)
+		if (settings.treeLevel == 0)
 		{
-			return ImGui::TreeNodeEx(GetUniqueName(name), ImGuiTreeNodeFlags_CollapsingHeader);
+			result = ImGui::TreeNodeEx(GetUniqueName(name), ImGuiTreeNodeFlags_CollapsingHeader);
 		}
 		else
 		{
-			return ImGui::TreeNode(GetUniqueName(name));
+			result = ImGui::TreeNode(GetUniqueName(name));
 		}
+		if (result)
+		{
+			settings.treeLevel += 1;
+		}
+		return result;
 	}
 
 	//--------------------------------------------------------------
 	void Gui::EndTree(Settings & settings)
 	{
-		settings.treeLevel -= 1;
+		settings.treeLevel = std::max(0, settings.treeLevel - 1);
 		ImGui::TreePop();
 	}
 
