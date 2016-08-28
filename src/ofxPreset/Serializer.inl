@@ -254,19 +254,19 @@ namespace ofxPreset
 		return jsonGroup;
 	}
 
-    //--------------------------------------------------------------
-    nlohmann::json & Serializer::Serialize(nlohmann::json & json, const ofNode & node, const string & name)
-    {
-        auto & jsonGroup = name.empty() ? json : json[name];
+	//--------------------------------------------------------------
+	nlohmann::json & Serializer::Serialize(nlohmann::json & json, const ofNode & node, const string & name)
+	{
+		auto & jsonGroup = name.empty() ? json : json[name];
 
-        jsonGroup["transform"] = ofToString(node.getLocalTransformMatrix());
+		jsonGroup["transform"] = ofToString(node.getGlobalTransformMatrix());
 
-        return jsonGroup;
-    }
-    
-    //--------------------------------------------------------------
-    const nlohmann::json & Serializer::Deserialize(const nlohmann::json & json, ofNode & node, const string & name)
-    {
+		return jsonGroup;
+	}
+
+	//--------------------------------------------------------------
+	const nlohmann::json & Serializer::Deserialize(const nlohmann::json & json, ofNode & node, const string & name)
+	{
 		if (!name.empty() && !json.count(name))
 		{
 			ofLogWarning("Serializer::Deserialize") << "Name " << name << " not found in JSON!";
@@ -286,5 +286,5 @@ namespace ofxPreset
 		}
 
 		return jsonGroup;
-    }
+	}
 }
