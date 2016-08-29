@@ -24,7 +24,7 @@ namespace ofxPreset
 	{
 		if (!name.empty() && !json.count(name))
 		{
-			ofLogWarning("Serializer::Deserialize") << "Name " << name << " not found in JSON!";
+			ofLogWarning(__FUNCTION__) << "Name " << name << " not found in JSON!";
 			return json;
 		}
 
@@ -116,7 +116,7 @@ namespace ofxPreset
 			const auto name = group.getName();
 			if (!name.empty() && !json.count(name))
 			{
-				ofLogWarning("Serializer::Deserialize") << "Name " << name << " not found in JSON!";
+				ofLogWarning(__FUNCTION__) << "Name " << name << " not found in JSON!";
 				return json;
 			}
 
@@ -174,7 +174,7 @@ namespace ofxPreset
 	{
 		if (!name.empty() && !json.count(name))
 		{
-			ofLogWarning("Serializer::Deserialize") << "Name " << name << " not found in JSON!";
+			ofLogWarning(__FUNCTION__) << "Name " << name << " not found in JSON!";
 			return json;
 		}
 
@@ -224,7 +224,7 @@ namespace ofxPreset
 	{
 		if (!name.empty() && !json.count(name))
 		{
-			ofLogWarning("Serializer::Deserialize") << "Name " << name << " not found in JSON!";
+			ofLogWarning(__FUNCTION__) << "Name " << name << " not found in JSON!";
 			return json;
 		}
 		
@@ -259,7 +259,7 @@ namespace ofxPreset
 	{
 		auto & jsonGroup = name.empty() ? json : json[name];
 
-		jsonGroup["transform"] = ofToString(node.getGlobalTransformMatrix());
+		jsonGroup["transform"] = ofToString(node.getLocalTransformMatrix());
 
 		return jsonGroup;
 	}
@@ -269,7 +269,7 @@ namespace ofxPreset
 	{
 		if (!name.empty() && !json.count(name))
 		{
-			ofLogWarning("Serializer::Deserialize") << "Name " << name << " not found in JSON!";
+			ofLogWarning(__FUNCTION__) << "Name " << name << " not found in JSON!";
 			return json;
 		}
 
