@@ -166,22 +166,40 @@ namespace ofxPreset
 			}
 
 			// Parameter, try everything we know how to handle.
-			auto parameterVec2f = dynamic_pointer_cast<ofParameter<ofVec2f>>(parameter);
+			auto parameterVec2f = dynamic_pointer_cast<ofParameter<glm::vec2>>(parameter);
 			if (parameterVec2f)
 			{
 				Gui::AddParameter(*parameterVec2f);
 				continue;
 			}
-			auto parameterVec3f = dynamic_pointer_cast<ofParameter<ofVec3f>>(parameter);
+			auto parameterVec3f = dynamic_pointer_cast<ofParameter<glm::vec3>>(parameter);
 			if (parameterVec3f)
 			{
 				Gui::AddParameter(*parameterVec3f);
 				continue;
 			}
-			auto parameterVec4f = dynamic_pointer_cast<ofParameter<ofVec4f>>(parameter);
+			auto parameterVec4f = dynamic_pointer_cast<ofParameter<glm::vec4>>(parameter);
 			if (parameterVec4f)
 			{
 				Gui::AddParameter(*parameterVec4f);
+				continue;
+			}
+			auto parameterOfVec2f = dynamic_pointer_cast<ofParameter<ofVec2f>>(parameter);
+			if (parameterOfVec2f)
+			{
+				Gui::AddParameter(*parameterOfVec2f);
+				continue;
+			}
+			auto parameterOfVec3f = dynamic_pointer_cast<ofParameter<ofVec3f>>(parameter);
+			if (parameterOfVec3f)
+			{
+				Gui::AddParameter(*parameterOfVec3f);
+				continue;
+			}
+			auto parameterOfVec4f = dynamic_pointer_cast<ofParameter<ofVec4f>>(parameter);
+			if (parameterOfVec4f)
+			{
+				Gui::AddParameter(*parameterOfVec4f);
 				continue;
 			}
 			auto parameterFloatColor = dynamic_pointer_cast<ofParameter<ofFloatColor>>(parameter);
