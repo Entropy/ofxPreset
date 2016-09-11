@@ -11,7 +11,7 @@ namespace ofxPreset
 	public:
 		struct WindowOpen
 		{
-			std::vector<std::string> usedNames;
+			std::stack<std::vector<std::string>> usedNames;
 			shared_ptr<ofParameter<bool>> parameter;
 			bool value;
 		};

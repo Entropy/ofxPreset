@@ -21,12 +21,12 @@ namespace ofxPreset
 	const char * Gui::GetUniqueName(const std::string & candidate)
 	{
 		std::string result = candidate;
-		while (std::find(windowOpen.usedNames.begin(), windowOpen.usedNames.end(), result) != windowOpen.usedNames.end())
+		while (std::find(windowOpen.usedNames.top().begin(), windowOpen.usedNames.top().end(), result) != windowOpen.usedNames.top().end())
 		{
 			result += " ";
 		}
-		windowOpen.usedNames.push_back(result);
-		return windowOpen.usedNames.back().c_str();
+		windowOpen.usedNames.top().push_back(result);
+		return windowOpen.usedNames.top().back().c_str();
 	}
 
 	//--------------------------------------------------------------
@@ -39,6 +39,12 @@ namespace ofxPreset
 	//--------------------------------------------------------------
 	bool Gui::BeginWindow(ofParameter<bool> & parameter, Settings & settings, bool collapse)
 	{
+		if (settings.windowBlock)
+		{
+			ofLogWarning(__FUNCTION__) << "Already inside a window block!";
+			return false;
+		}
+		
 		// Reference this ofParameter until EndWindow().
 		windowOpen.parameter = dynamic_pointer_cast<ofParameter<bool>>(parameter.newReference());
 		windowOpen.value = parameter.get();
@@ -58,6 +64,9 @@ namespace ofxPreset
 		}
 
 		settings.windowBlock = true;
+
+		// Push a new list of names onto the stack.
+		windowOpen.usedNames.push(std::vector<std::string>());
 
 		ImGui::SetNextWindowPos(settings.windowPos, ImGuiSetCond_Appearing);
 		ImGui::SetNextWindowSize(settings.windowSize, ImGuiSetCond_Appearing);
@@ -83,8 +92,8 @@ namespace ofxPreset
 		// Unlink the referenced ofParameter.
 		windowOpen.parameter.reset();
 
-		// Clear the used gui names.
-		windowOpen.usedNames.clear();
+		// Clear the list of names from the stack.
+		windowOpen.usedNames.pop();
 
 		// Check if the mouse cursor is over this gui window.
 		const auto windowBounds = ofRectangle(settings.windowPos, settings.windowSize.x, settings.windowSize.y);
@@ -123,6 +132,9 @@ namespace ofxPreset
 		if (result)
 		{
 			settings.treeLevel += 1;
+
+			// Push a new list of names onto the stack.
+			windowOpen.usedNames.push(std::vector<std::string>());
 		}
 		return result;
 	}
@@ -131,6 +143,10 @@ namespace ofxPreset
 	void Gui::EndTree(Settings & settings)
 	{
 		settings.treeLevel = std::max(0, settings.treeLevel - 1);
+
+		// Clear the list of names from the stack.
+		windowOpen.usedNames.pop();
+
 		ImGui::TreePop();
 	}
 
