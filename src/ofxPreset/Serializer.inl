@@ -288,22 +288,20 @@ namespace ofxPreset
 
 		const auto & jsonGroup = name.empty() ? json : json[name];
 
-		if (jsonGroup.count("position") && jsonGroup.count("orientation") && jsonGroup.count("scale"))
+		if (jsonGroup.count("position"))
 		{
 			const auto position = ofFromString<glm::vec3>(jsonGroup["position"]);
-			const auto orientation = ofFromString<glm::quat>(jsonGroup["orientation"]);
-			const auto scale = ofFromString<glm::vec3>(jsonGroup["scale"]);
-
 			node.setPosition(position);
-			node.setOrientation(orientation);
-			node.setScale(scale);
 		}
-		else if (jsonGroup.count("transform"))
+		if (jsonGroup.count("orientation"))
 		{
-			ofLogWarning(__FUNCTION__) << "Setting node using transform matrix is not reliable!";
-
-			const auto transform = ofFromString<glm::mat4>(jsonGroup["transform"]);
-			node.setTransformMatrix(transform);
+			const auto orientation = ofFromString<glm::quat>(jsonGroup["orientation"]);
+			node.setOrientation(orientation);
+		}
+		if (jsonGroup.count("scale"))
+		{
+			const auto scale = ofFromString<glm::vec3>(jsonGroup["scale"]);
+			node.setScale(scale);
 		}
 
 		return jsonGroup;
