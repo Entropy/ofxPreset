@@ -441,7 +441,10 @@ namespace ofxPreset
 			ImGui::Columns(1);
 		}
 		ImGui::PopID();
-		parameter.set(tmpRef);
+		if (result)
+		{
+			parameter.set(tmpRef);
+		}
 		return result;
 	}
 

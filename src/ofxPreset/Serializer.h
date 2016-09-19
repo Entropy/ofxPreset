@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ofMain.h"
+#include "ofParameter.h"
 
 namespace ofxPreset
 {
