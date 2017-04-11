@@ -6,7 +6,7 @@ static const int kGuiMargin = 10;
 
 namespace ofxPreset
 {	
-    class Gui
+	class Gui
 	{
 	public:
 		struct WindowOpen

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ofEasyCam.h"
+#include "ofJson.h"
 #include "ofParameter.h"
 
 namespace ofxPreset
