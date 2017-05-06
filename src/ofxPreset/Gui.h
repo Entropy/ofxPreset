@@ -6,12 +6,12 @@ static const int kGuiMargin = 10;
 
 namespace ofxPreset
 {	
-    class Gui
+	class Gui
 	{
 	public:
 		struct WindowOpen
 		{
-			std::vector<std::string> usedNames;
+			std::stack<std::vector<std::string>> usedNames;
 			shared_ptr<ofParameter<bool>> parameter;
 			bool value;
 		};

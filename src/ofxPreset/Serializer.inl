@@ -7,7 +7,7 @@ namespace ofxPreset
 	nlohmann::json & Serializer::Serialize(nlohmann::json & json, const vector<DataType> & values, const string & name)
 	{
 		auto & jsonGroup = name.empty() ? json : json[name];
-		
+
 		for (const auto & val : values)
 		{
 			ostringstream oss;
@@ -17,7 +17,7 @@ namespace ofxPreset
 
 		return jsonGroup;
 	}
-	
+
 	//--------------------------------------------------------------
 	template<typename DataType>
 	const nlohmann::json & Serializer::Deserialize(const nlohmann::json & json, vector<DataType> & values, const string & name)
@@ -32,7 +32,7 @@ namespace ofxPreset
 		values.clear();
 
 		for (const auto & jsonValue : jsonGroup)
-		{	
+		{
 			istringstream iss;
 			iss.str(jsonValue);
 			DataType val;
@@ -42,7 +42,7 @@ namespace ofxPreset
 
 		return jsonGroup;
 	}
-	
+
 	//--------------------------------------------------------------
 	inline nlohmann::json & Serializer::Serialize(nlohmann::json & json, const ofAbstractParameter & parameter)
 	{
@@ -54,7 +54,7 @@ namespace ofxPreset
 
 		return json;
 	}
-	
+
 	//--------------------------------------------------------------
 	inline const nlohmann::json & Serializer::Deserialize(const nlohmann::json & json, ofAbstractParameter & parameter)
 	{
@@ -75,8 +75,8 @@ namespace ofxPreset
 	}
 
 	//--------------------------------------------------------------
-    nlohmann::json & Serializer::Serialize(nlohmann::json & json, const ofParameterGroup & group)
-    {
+	nlohmann::json & Serializer::Serialize(nlohmann::json & json, const ofParameterGroup & group)
+	{
 		if (group.isSerializable())
 		{
 			const auto name = group.getName();
@@ -103,14 +103,14 @@ namespace ofxPreset
 
 			return jsonGroup;
 		}
-		
+
 		ofLogWarning(__FUNCTION__) << "Group " << group.getName() << " is not serializable";
 		return json;
-    }
+	}
 
-    //--------------------------------------------------------------
-    const nlohmann::json & Serializer::Deserialize(const nlohmann::json & json, ofParameterGroup & group)
-    {
+	//--------------------------------------------------------------
+	const nlohmann::json & Serializer::Deserialize(const nlohmann::json & json, ofParameterGroup & group)
+	{
 		if (group.isSerializable())
 		{
 			const auto name = group.getName();
@@ -150,7 +150,7 @@ namespace ofxPreset
 
 		ofLogWarning(__FUNCTION__) << "Group " << group.getName() << " is not serializable";
 		return json;
-    }
+	}
 
 	//--------------------------------------------------------------
 	inline nlohmann::json & Serializer::Serialize(nlohmann::json & json, const ofEasyCam & easyCam, const string & name)
@@ -166,6 +166,7 @@ namespace ofxPreset
 		jsonGroup["relativeYAxis"] = easyCam.getRelativeYAxis();
 		jsonGroup["upAxis"] = ofToString(easyCam.getUpAxis());
 		jsonGroup["inertiaEnabled"] = easyCam.getInertiaEnabled();
+
 		return jsonGroup;
 	}
 
@@ -190,8 +191,18 @@ namespace ofxPreset
 			easyCam.setDrag(jsonGroup["drag"]);
 			jsonGroup["mouseInputEnabled"] ? easyCam.enableMouseInput() : easyCam.disableMouseInput();
 			jsonGroup["mouseMiddleButtonEnabled"] ? easyCam.enableMouseMiddleButton() : easyCam.disableMouseMiddleButton();
-			int translationKey = jsonGroup["translationKey"];
-			easyCam.setTranslationKey(translationKey);
+			if (jsonGroup.count("translationKey"))
+			{
+				int translationKey = jsonGroup["translationKey"];
+				easyCam.setTranslationKey(translationKey);
+			}
+			if (jsonGroup.count("relativeAxis")) easyCam.setRelativeYAxis(jsonGroup["relativeYAxis"]);
+			if (jsonGroup.count("upAxis"))
+			{
+				const auto upAxis = ofFromString<glm::vec3>(jsonGroup["upAxis"]);
+				easyCam.setUpAxis(upAxis);
+			}
+			if (jsonGroup.count("inertiaEnabled")) jsonGroup["inertiaEnabled"] ? easyCam.enableInertia() : easyCam.disableInertia();
 		}
 		catch (std::exception & exc)
 		{
@@ -227,7 +238,7 @@ namespace ofxPreset
 			ofLogWarning(__FUNCTION__) << "Name " << name << " not found in JSON!";
 			return json;
 		}
-		
+
 		const auto & jsonGroup = name.empty() ? json : json[name];
 
 		try
@@ -259,7 +270,9 @@ namespace ofxPreset
 	{
 		auto & jsonGroup = name.empty() ? json : json[name];
 
-		jsonGroup["transform"] = ofToString(node.getLocalTransformMatrix());
+		jsonGroup["position"] = ofToString(node.getPosition());
+		jsonGroup["orientation"] = ofToString(node.getOrientationQuat());
+		jsonGroup["scale"] = ofToString(node.getScale());
 
 		return jsonGroup;
 	}
@@ -275,14 +288,20 @@ namespace ofxPreset
 
 		const auto & jsonGroup = name.empty() ? json : json[name];
 
-		try
+		if (jsonGroup.count("position"))
 		{
-			const auto transform = ofFromString<glm::mat4>(jsonGroup["transform"]);
-			node.setTransformMatrix(transform);
+			const auto position = ofFromString<glm::vec3>(jsonGroup["position"]);
+			node.setPosition(position);
 		}
-		catch (std::exception & exc)
+		if (jsonGroup.count("orientation"))
 		{
-			ofLogError(__FUNCTION__) << exc.what();
+			const auto orientation = ofFromString<glm::quat>(jsonGroup["orientation"]);
+			node.setOrientation(orientation);
+		}
+		if (jsonGroup.count("scale"))
+		{
+			const auto scale = ofFromString<glm::vec3>(jsonGroup["scale"]);
+			node.setScale(scale);
 		}
 
 		return jsonGroup;
