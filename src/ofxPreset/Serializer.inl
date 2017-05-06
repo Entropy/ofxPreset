@@ -44,7 +44,7 @@ namespace ofxPreset
 	}
 	
 	//--------------------------------------------------------------
-	nlohmann::json & Serializer::Serialize(nlohmann::json & json, const ofAbstractParameter & parameter)
+	inline nlohmann::json & Serializer::Serialize(nlohmann::json & json, const ofAbstractParameter & parameter)
 	{
 		if (parameter.isSerializable())
 		{
@@ -56,7 +56,7 @@ namespace ofxPreset
 	}
 	
 	//--------------------------------------------------------------
-	const nlohmann::json & Serializer::Deserialize(const nlohmann::json & json, ofAbstractParameter & parameter)
+	inline const nlohmann::json & Serializer::Deserialize(const nlohmann::json & json, ofAbstractParameter & parameter)
 	{
 		if (parameter.isSerializable())
 		{
@@ -153,7 +153,7 @@ namespace ofxPreset
     }
 
 	//--------------------------------------------------------------
-	nlohmann::json & Serializer::Serialize(nlohmann::json & json, const ofEasyCam & easyCam, const string & name)
+	inline nlohmann::json & Serializer::Serialize(nlohmann::json & json, const ofEasyCam & easyCam, const string & name)
 	{
 		auto & jsonGroup = Serializer::Serialize(json, (ofCamera &)easyCam, name);
 
@@ -170,7 +170,7 @@ namespace ofxPreset
 	}
 
 	//--------------------------------------------------------------
-	const nlohmann::json & Serializer::Deserialize(const nlohmann::json & json, ofEasyCam & easyCam, const string & name)
+	inline const nlohmann::json & Serializer::Deserialize(const nlohmann::json & json, ofEasyCam & easyCam, const string & name)
 	{
 		if (!name.empty() && !json.count(name))
 		{
@@ -204,7 +204,7 @@ namespace ofxPreset
 	}
 
 	//--------------------------------------------------------------
-	nlohmann::json & Serializer::Serialize(nlohmann::json & json, const ofCamera & camera, const string & name)
+	inline nlohmann::json & Serializer::Serialize(nlohmann::json & json, const ofCamera & camera, const string & name)
 	{
 		auto & jsonGroup = Serializer::Serialize(json, (ofNode &)camera, name);
 
@@ -220,7 +220,7 @@ namespace ofxPreset
 	}
 
 	//--------------------------------------------------------------
-	const nlohmann::json & Serializer::Deserialize(const nlohmann::json & json, ofCamera & camera, const string & name)
+	inline const nlohmann::json & Serializer::Deserialize(const nlohmann::json & json, ofCamera & camera, const string & name)
 	{
 		if (!name.empty() && !json.count(name))
 		{
@@ -255,7 +255,7 @@ namespace ofxPreset
 	}
 
 	//--------------------------------------------------------------
-	nlohmann::json & Serializer::Serialize(nlohmann::json & json, const ofNode & node, const string & name)
+	inline nlohmann::json & Serializer::Serialize(nlohmann::json & json, const ofNode & node, const string & name)
 	{
 		auto & jsonGroup = name.empty() ? json : json[name];
 
@@ -265,7 +265,7 @@ namespace ofxPreset
 	}
 
 	//--------------------------------------------------------------
-	const nlohmann::json & Serializer::Deserialize(const nlohmann::json & json, ofNode & node, const string & name)
+	inline const nlohmann::json & Serializer::Deserialize(const nlohmann::json & json, ofNode & node, const string & name)
 	{
 		if (!name.empty() && !json.count(name))
 		{
