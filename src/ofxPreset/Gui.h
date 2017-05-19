@@ -46,9 +46,9 @@ namespace ofxPreset
 
 		static inline void AddGroup(ofParameterGroup & group, Settings & settings);
 	
-        static inline bool AddParameter(ofParameter<glm::tvec2<int>> & parameter);
-        static inline bool AddParameter(ofParameter<glm::tvec3<int>> & parameter);
-        static inline bool AddParameter(ofParameter<glm::tvec4<int>> & parameter);
+        //static inline bool AddParameter(ofParameter<glm::tvec2<int>> & parameter);
+        //static inline bool AddParameter(ofParameter<glm::tvec3<int>> & parameter);
+        //static inline bool AddParameter(ofParameter<glm::tvec4<int>> & parameter);
 
         static inline bool AddParameter(ofParameter<glm::vec2> & parameter);
         static inline bool AddParameter(ofParameter<glm::vec3> & parameter);
@@ -68,9 +68,9 @@ namespace ofxPreset
 
 		static inline bool AddRange(const string & name, ofParameter<float> & parameterMin, ofParameter<float> & parameterMax, float speed = 0.01f);
 
-		static inline bool AddValues(const string & name, vector<glm::tvec2<int>> & values, int minValue, int maxValue);
-		static inline bool AddValues(const string & name, vector<glm::tvec3<int>> & values, int minValue, int maxValue);
-		static inline bool AddValues(const string & name, vector<glm::tvec4<int>> & values, int minValue, int maxValue);
+		//static inline bool AddValues(const string & name, vector<glm::ivec2> & values, int minValue, int maxValue);
+		//static inline bool AddValues(const string & name, vector<glm::ivec3> & values, int minValue, int maxValue);
+		//static inline bool AddValues(const string & name, vector<glm::ivec4> & values, int minValue, int maxValue);
 
 		static inline bool AddValues(const string & name, vector<glm::vec2> & values, float minValue, float maxValue);
 		static inline bool AddValues(const string & name, vector<glm::vec3> & values, float minValue, float maxValue);

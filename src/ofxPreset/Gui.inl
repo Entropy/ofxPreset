@@ -258,8 +258,9 @@ namespace ofxPreset
 		}
 	}
 
+	/*
 	//--------------------------------------------------------------
-	bool Gui::AddParameter(ofParameter<glm::tvec2<int>> & parameter)
+	bool Gui::AddParameter(ofParameter<glm::ivec2> & parameter)
 	{
 		auto tmpRef = parameter.get();
 		if (ImGui::SliderInt2(GetUniqueName(parameter), glm::value_ptr(tmpRef), parameter.getMin().x, parameter.getMax().x))
@@ -271,7 +272,7 @@ namespace ofxPreset
 	}
 
 	//--------------------------------------------------------------
-	bool Gui::AddParameter(ofParameter<glm::tvec3<int>> & parameter)
+	bool Gui::AddParameter(ofParameter<glm::ivec3> & parameter)
 	{
 		auto tmpRef = parameter.get();
 		if (ImGui::SliderInt3(GetUniqueName(parameter), glm::value_ptr(tmpRef), parameter.getMin().x, parameter.getMax().x))
@@ -283,7 +284,7 @@ namespace ofxPreset
 	}
 
 	//--------------------------------------------------------------
-	bool Gui::AddParameter(ofParameter<glm::tvec4<int>> & parameter)
+	bool Gui::AddParameter(ofParameter<glm::ivec4> & parameter)
 	{
 		auto tmpRef = parameter.get();
 		if (ImGui::SliderInt4(GetUniqueName(parameter), glm::value_ptr(tmpRef), parameter.getMin().x, parameter.getMax().x))
@@ -293,6 +294,7 @@ namespace ofxPreset
 		}
 		return false;
 	}
+	*/
 
 	//--------------------------------------------------------------
 	bool Gui::AddParameter(ofParameter<glm::vec2> & parameter)
@@ -474,8 +476,9 @@ namespace ofxPreset
 		return false;
 	}
 
+	/*
 	//--------------------------------------------------------------
-	bool Gui::AddValues(const string & name, vector<glm::tvec2<int>> & values, int minValue, int maxValue)
+	bool Gui::AddValues(const string & name, vector<glm::ivec2> & values, int minValue, int maxValue)
 	{
 		auto result = false;
 		for (int i = 0; i < values.size(); ++i)
@@ -487,7 +490,7 @@ namespace ofxPreset
 	}
 
 	//--------------------------------------------------------------
-	bool Gui::AddValues(const string & name, vector<glm::tvec3<int>> & values, int minValue, int maxValue)
+	bool Gui::AddValues(const string & name, vector<glm::ivec3> & values, int minValue, int maxValue)
 	{
 		auto result = false;
 		for (int i = 0; i < values.size(); ++i)
@@ -499,7 +502,7 @@ namespace ofxPreset
 	}
 
 	//--------------------------------------------------------------
-	bool Gui::AddValues(const string & name, vector<glm::tvec4<int>> & values, int minValue, int maxValue)
+	bool Gui::AddValues(const string & name, vector<glm::ivec4> & values, int minValue, int maxValue)
 	{
 		auto result = false;
 		for (int i = 0; i < values.size(); ++i)
@@ -509,6 +512,7 @@ namespace ofxPreset
 		}
 		return result;
 	}
+	*/
 
 	//--------------------------------------------------------------
 	bool Gui::AddValues(const string & name, vector<glm::vec2> & values, float minValue, float maxValue)
